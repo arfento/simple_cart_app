@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:simple_cart_app/bloc/cart/cart_bloc.dart';
 import 'package:simple_cart_app/bloc/wishlist/wishlist_bloc.dart';
 import 'package:simple_cart_app/models/product.dart';
@@ -37,7 +36,8 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 60,
+            bottom: 10,
+            left: 5,
             child: Container(
               height: 80,
               width: MediaQuery.of(context).size.width / 2.5,
@@ -47,13 +47,13 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           Positioned(
-              top: 65,
+              bottom: 5,
               left: 5,
               child: Container(
                 height: 70,
                 width: MediaQuery.of(context).size.width / widthFactor - 10,
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: Colors.black.withOpacity(0.5),
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(8),
@@ -83,76 +83,54 @@ class ProductCard extends StatelessWidget {
                         ),
                       ),
                       BlocBuilder<CartBloc, CartState>(
-                        builder: (context, state) {
-                          if (state is CartLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (state is CartLoaded) {
-                            return Expanded(
-                              child: IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<CartBloc>()
-                                      .add(CartProductAdded(product));
-                                  Fluttertoast.showToast(
-                                    msg: "Item added to cart",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.grey,
-                                    textColor: Colors.black,
-                                    fontSize: 16,
-                                  );
-                                },
-                                icon:
-                                    Icon(Icons.add_circle, color: Colors.white),
-                              ),
-                            );
-                          } else {
-                            return const Center(
-                              child: Text("Something went wrong."),
-                            );
-                          }
-                        },
-                      ),
+                          builder: (context, state) {
+                        if (state is CartLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (state is CartLoaded) {
+                          return Expanded(
+                            child: IconButton(
+                              icon: Icon(Icons.add_circle, color: Colors.white),
+                              onPressed: () {
+                                context
+                                    .read<CartBloc>()
+                                    .add(CartProductAdded(product));
+                              },
+                            ),
+                          );
+                        } else {
+                          return Text('Something went wrong.');
+                        }
+                      }),
                       isWishlist!
                           ? Expanded(
                               child: BlocBuilder<WishlistBloc, WishlistState>(
                                 builder: (context, state) {
-                                  if (state is WishlistLoading) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  } else if (state is WishlistLoaded) {
-                                    return IconButton(
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () { BlocProvider.of<WishlistBloc>(context).add(
-                                      RemoveWishlistProduct(product: product),
-                                    );
-                                    Fluttertoast.showToast(
-                                      msg: "Item deleted from wishlist.",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.grey,
-                                      textColor: Colors.black,
-                                      fontSize: 16.0,
-                                    );
-                                  },,
-                                    );
-                                  } else {
-                                    return const Center(
-                                      child: Text("Something went Wrong"),
-                                    );
-                                  }
+                                  return IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      BlocProvider.of<WishlistBloc>(context)
+                                          .add(
+                                        RemoveWishlistProduct(product: product),
+                                      );
+                                      // Fluttertoast.showToast(
+                                      //   msg: "Item deleted from wishlist.",
+                                      //   toastLength: Toast.LENGTH_SHORT,
+                                      //   gravity: ToastGravity.BOTTOM,
+                                      //   timeInSecForIosWeb: 1,
+                                      //   backgroundColor: Colors.grey,
+                                      //   textColor: Colors.black,
+                                      //   fontSize: 16.0,
+                                      // );
+                                    },
+                                  );
                                 },
                               ),
                             )
-                          : Container()
+                          : SizedBox(),
                     ],
                   ),
                 ),

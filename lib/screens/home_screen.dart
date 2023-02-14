@@ -18,11 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Title'),
-      ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -46,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .where((element) => element.isRecommended)
                   .toList(),
             ),
-            SectionTitle(title: "Most Popular"),
+            const SectionTitle(title: "Most Popular"),
             ProductCarousel(
               product: Product.products
                   .where((element) => element.isPopular)
